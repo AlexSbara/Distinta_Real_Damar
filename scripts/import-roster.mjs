@@ -2,11 +2,11 @@ import {readFile} from 'node:fs/promises';
 import {isDeepStrictEqual} from 'node:util';
 import pg from 'pg';
 if(!process.env.DATABASE_URL)throw new Error('Configura DATABASE_URL prima di importare.');
-const data=JSON.parse(await readFile(process.argv[2]||new URL('../data/roster-export.json',import.meta.url),'utf8'));
+const data=JSON.parse(process.env.ROSTER_IMPORT_JSON || await readFile(process.argv[2]||new URL('../data/roster-export.json',import.meta.url),'utf8'));
 const fields=['id','firstName','lastName','number','code','documentType','documentNumber'];
 if(!Array.isArray(data.players)||!data.team||new Set(data.players.map(p=>p.id)).size!==data.players.length||new Set(data.players.map(p=>p.code)).size!==data.players.length)throw new Error('Esportazione non valida.');
 const normalize=p=>Object.fromEntries(fields.map(f=>[f,p[f]??'']));
-const client=new pg.Client({connectionString:process.env.DATABASE_URL});
+const client=new pg.Client({connectionString:process.env.DATABASE_URL,connectionTimeoutMillis:10000});
 try{
  await client.connect();await client.query('BEGIN');
  for(const raw of data.players){const p=normalize(raw);await client.query('INSERT INTO players(id,"firstName","lastName",number,code,"documentType","documentNumber") VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT(id) DO NOTHING',fields.map(f=>p[f]));const r=await client.query('SELECT * FROM players WHERE id=$1',[p.id]);if(!isDeepStrictEqual(normalize(r.rows[0]),p))throw new Error('Un giocatore esistente contiene dati diversi: importazione annullata.');}
