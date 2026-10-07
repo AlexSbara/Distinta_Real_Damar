@@ -8,3 +8,11 @@ CREATE TABLE IF NOT EXISTS players (
  "documentNumber" text NOT NULL DEFAULT ''
 );
 CREATE TABLE IF NOT EXISTS team (id integer PRIMARY KEY, name text NOT NULL);
+CREATE TABLE IF NOT EXISTS directors (
+ id text PRIMARY KEY,
+ "firstName" text NOT NULL,
+ "lastName" text NOT NULL,
+ code text NOT NULL DEFAULT '',
+ "documentType" text NOT NULL DEFAULT '',
+ "documentNumber" text NOT NULL DEFAULT ''
+);

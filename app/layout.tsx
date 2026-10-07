@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Distinta 7 | Gestione squadra",
+  title: "Real Damar | Distinta 7",
   description: "La tua rosa e le distinte di gara in PDF, pronte in pochi clic.",
   other: {
     "codex-preview": "development",

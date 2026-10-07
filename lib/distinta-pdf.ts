@@ -18,7 +18,6 @@ export async function createDistintaPdf(input:DistintaInput,loadAsset=asset){
  }
  const [rear]=await doc.copyPages(b,[0]);doc.addPage(rear);
  input.staff.slice(0,7).forEach((s,i)=>{text(rear,font,s.name,28,88+i*51.2,242,11);text(rear,font,s.code,283,83+i*51.2,170,10);});
- text(rear,font,'I NOSTRI SPONSOR',24,665,540,11);
  for(let i=0;i<logos.length;i++){const img=await doc.embedJpg(logos[i]);const scale=Math.min(125/img.width,100/img.height);const width=img.width*scale,height=img.height*scale;rear.drawImage(img,{x:24+i*139+(125-width)/2,y:52+(100-height)/2,width,height});}
  doc.setTitle(`Distinta ${input.team}`);doc.setSubject('Modello fronte e retro con sponsor');return doc.save();
 }
